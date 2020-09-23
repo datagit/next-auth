@@ -1,14 +1,14 @@
-import Nav from '../components/nav'
-import Footer from '../components/footer'
-// import { csrfToken } from 'next-auth/client'
+import Nav from '../../components/nav'
+import Footer from '../../components/footer'
+import { csrfToken } from 'next-auth/client'
 
-const NextAuth = ({ csrfToken }) => (
+const SigninPage = ({ csrfToken }) => (
   <>
     <Nav />
     <main>
-      <h1>NextAuth.js Demo</h1>
+      <h1>SigninPage.js Demo</h1>
       <div>
-        <form action="/api/auth/callback/credentials" method="post">
+        <form action="/api/auth/callback/login_with_u_p" method="post">
         <input name='csrfToken' type='hidden' defaultValue={csrfToken}/>
           <label for="username">username:</label><br />
           <input type="text" id="username" name="username"/><br />
@@ -21,10 +21,10 @@ const NextAuth = ({ csrfToken }) => (
         <Footer />
   </>
 )
-// NextAuth.getInitialProps = async (context) => {
-//   return {
-//     csrfToken: await csrfToken(context)
-//   }
-// }
+SigninPage.getInitialProps = async (context) => {
+  return {
+    csrfToken: await csrfToken(context)
+  }
+}
 
-export default NextAuth
+export default SigninPage;

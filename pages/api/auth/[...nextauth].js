@@ -2,8 +2,10 @@ import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 
 const options = {
+  basePath: '/api/auth',
   // @link https://next-auth.js.org/configuration/providers
   providers: [
+    /*
     Providers.Email({
       // SMTP connection string or nodemailer configuration object https://nodemailer.com/
       server: process.env.NEXTAUTH_EMAIL_SERVER,
@@ -28,6 +30,43 @@ const options = {
       clientId: process.env.NEXTAUTH_GITHUB_ID,
       clientSecret: process.env.NEXTAUTH_GITHUB_SECRET,
     }),
+    */
+    /**>> with credentials */
+    Providers.Credentials({
+      // The name to display on the sign in form (e.g. 'Sign in with...')
+      id: 'login_with_u_p',
+      name: 'Credentials',
+      // The credentials is used to generate a suitable form on the sign in page.
+      // You can specify whatever fields you are expecting to be submitted.
+      // e.g. domain, username, password, 2FA token, etc.
+      credentials: {
+        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        password: {  label: "Password", type: "password" }
+      },
+      authorize: async (credentials) => {
+        // const user = (credentials) => {
+        //   // You need to provide your own logic here that takes the credentials
+        //   // submitted and returns either a object representing a user or value
+        //   // that is false/null if the credentials are invalid.
+        //   // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
+        //   const rand = Boolean(Math.round(Math.random()));
+        //   if (rand) {
+        //     return { id: 1, name: 'J Smith', email: 'jsmith@example.com' };
+        //   } else {
+        //     return null;
+        //   }
+        // }
+        // Add logic here to look up the user from the credentials supplied
+        const user = { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
+        if (user) {
+          // Any user object returned here will be saved in the JSON Web Token
+          return Promise.resolve(user)
+        } else {
+          return Promise.resolve(null)
+        }
+      }
+    })
+    /**<< with credentials */
   ],
 
   // @link https://next-auth.js.org/configuration/databases
@@ -109,6 +148,7 @@ const options = {
   // The routes shown here are the default URLs that will be used.
   // @link https://next-auth.js.org/configuration/pages
   pages: {
+    // signIn: '/auth/credentials-signin',
     //signIn: '/api/auth/signin',
     //signOut: '/api/auth/signout',
     //error: '/api/auth/error', // Error code passed in query string as ?error=
@@ -118,7 +158,7 @@ const options = {
 
   // Additional options
   // secret: 'abcdef123456789' // Recommended (but auto-generated if not specified)
-  // debug: true, // Use this option to enable debug messages in the console
+  debug: true, // Use this option to enable debug messages in the console
 }
 
 const Auth = (req, res) => NextAuth(req, res, options)
